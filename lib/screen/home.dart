@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/model/model.dart';
 import 'package:flutter_app/screen/detail.dart';
+import 'package:flushbar/flushbar.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -13,14 +14,23 @@ class Home extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   InkWell(
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Details(
-                                    namaMakanan: produk.nama,
-                                    gambarMakanan: produk.gambar,
-                                    detailMakanan: produk.detail,
-                                  ))),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Details(
+                                      namaMakanan: produk.nama,
+                                      gambarMakanan: produk.gambar,
+                                      detailMakanan: produk.detail,
+                                    )));
+                        Flushbar(
+                          aroundPadding: EdgeInsets.all(8),
+                          borderRadius: 8,
+                          title: "Makanan",
+                          message: produk.nama,
+                          duration: Duration(seconds: 3),
+                        )..show(context);
+                      },
                       child: ColumnCustom(
                         tag: produk.nama,
                         gambar: produk.gambar,
@@ -40,6 +50,7 @@ class Home extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Makanan'),
+        backgroundColor: Colors.lightGreen,
       ),
       body: grid,
     );
