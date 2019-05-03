@@ -1,103 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/model/model.dart';
-import 'package:flutter_app/screen/detail.dart';
-import 'package:flushbar/flushbar.dart';
+import 'package:flutter_app/screen/breakfast_screen.dart';
+import 'package:flutter_app/screen/dessert_screen.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    createlist(DataItem produk) => Container(
-          height: 120.0,
-          child: InkWell(
-            onTap: () {},
-            child: Card(
-              child: Column(
-                children: <Widget>[
-                  InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Details(
-                                      namaMakanan: produk.nama,
-                                      gambarMakanan: produk.gambar,
-                                      detailMakanan: produk.detail,
-                                    )));
-                        Flushbar(
-                          aroundPadding: EdgeInsets.all(8),
-                          borderRadius: 8,
-                          title: "Makanan",
-                          message: produk.nama,
-                          duration: Duration(seconds: 3),
-                        )..show(context);
-                      },
-                      child: ColumnCustom(
-                        tag: produk.nama,
-                        gambar: produk.gambar,
-                        nama: produk.nama,
-                      ))
-                ],
-              ),
-            ),
-          ),
-        );
-
-    final grid = GridView.count(
-      crossAxisCount: 2,
-      children: data.map((produk) => createlist(produk)).toList(),
-    );
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Makanan'),
-        backgroundColor: Colors.lightGreen,
-      ),
-      body: grid,
-    );
-  }
+  _HomeState createState() => _HomeState();
 }
 
-class ColumnCustom extends StatelessWidget {
-  final String gambar, nama, tag;
+class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
+  int currentTabIndex;
+  TabController tabController;
 
-  ColumnCustom({this.nama, this.gambar, this.tag});
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    tabController = TabController(length: 2, vsync: this);
+    currentTabIndex = 0;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    tabController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Hero(
-              tag: tag,
-              placeholderBuilder: (context, child) {
-                return Opacity(opacity: 0.2, child: child);
-              },
-              child: ClipRRect(
-                borderRadius: new BorderRadius.circular(16.0),
-                child: Image.asset(
-                  gambar,
-                  // height: 90.0,
-                  // width: 100.0,
-                  height: 150.0,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )),
-        SizedBox(
-          width: 5.0,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              nama,
-              style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+    return Scaffold(
+      body: TabBarView(
+        controller: tabController,
+        children: <Widget>[BreakfastScreen(), DessertScreen()],
+      ),
+      bottomNavigationBar: Material(
+        color: Colors.lightGreen,
+        child: TabBar(
+          controller: tabController,
+          tabs: <Widget>[
+            Tab(
+              text: "Breakfast",
             ),
+            Tab(
+              text: "Dessert",
+            )
           ],
-        )
-      ],
+        ),
+      ),
     );
   }
 }

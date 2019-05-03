@@ -1,3 +1,4 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
 class Details extends StatelessWidget {
@@ -6,12 +7,7 @@ class Details extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(
-      title: Text(namaMakanan),
-    );
-
     return Scaffold(
-      // appBar: appBar,
       body: _buildBody(context),
     );
   }
@@ -47,16 +43,6 @@ class Details extends StatelessWidget {
         body: Center(
           child: ListView(
             children: <Widget>[
-              // Align(
-              //   alignment: Alignment.center,
-              //   child: Text(
-              //     "Rp " + money.format(produk.price),
-              //     style: Theme.of(context)
-              //         .textTheme
-              //         .headline
-              //         .copyWith(color: Theme.of(context).accentColor),
-              //   ),
-              // ),
               SizedBox(
                 height: 50.0,
               ),
@@ -69,7 +55,15 @@ class Details extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Flushbar(
+            aroundPadding: EdgeInsets.all(8),
+            borderRadius: 8,
+//            title: "",
+            message: namaMakanan,
+            duration: Duration(seconds: 1),
+          )..show(context);
+        },
         tooltip: 'Increment',
         child: Icon(Icons.add_shopping_cart),
       ),

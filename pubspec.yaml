@@ -42,21 +42,22 @@ flutter:
   uses-material-design: true
 
   assets:
-    - img/gado.jpg
-    - img/ilabulo.jpg
-    - img/kebab.jpg
-    - img/kepiting.jpg
-    - img/ketoprak.jpg
-    - img/lalampa.jpg
-    - img/milu.jpg
-    - img/mujair.jpg
-    - img/nasikuning.jpg
-    - img/nasipadang.jpg
-    - img/nila.jpg
-    - img/onde.jpg
-    - img/popolulu.jpg
-    - img/soto.jpg
-    - img/tuna.jpg
+    - assets/img/
+#    - img/gado.jpg
+#    - img/ilabulo.jpg
+#    - img/kebab.jpg
+#    - img/kepiting.jpg
+#    - img/ketoprak.jpg
+#    - img/lalampa.jpg
+#    - img/milu.jpg
+#    - img/mujair.jpg
+#    - img/nasikuning.jpg
+#    - img/nasipadang.jpg
+#    - img/nila.jpg
+#    - img/onde.jpg
+#    - img/popolulu.jpg
+#    - img/soto.jpg
+#    - img/tuna.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
