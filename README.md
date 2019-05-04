@@ -1,5 +1,5 @@
 ## Submission 1
 
-Dilarang keras plagit project ini, silahkan gunakan untuk refernsi menyelesaikan kelas flutter dicoding.
+Dilarang keras plagiat project ini, silahkan gunakan untuk refernsi menyelesaikan kelas flutter dicoding.
 
 
