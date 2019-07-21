@@ -1,55 +1,81 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/model/model.dart';
+import 'package:flutter_app/model/homeitem.dart';
+import 'package:flutter_app/model/meal.dart';
 import 'package:flutter_app/screen/detail.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class BreakfastScreen extends StatelessWidget {
+
+  List<Container> daftarMakanan = new List();
+
+  Future<HomeItem> getMeals() async {
+    final Response response = await http.get('https://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood');
+
+    if (response.statusCode == 200) {
+      return myModelFromJson(response.body);
+    } else {
+      throw Exception('Gagal mendapatkan post');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    createlist(ModelBreakfast produk) => Container(
-          height: 120.0,
-          child: InkWell(
-            onTap: () {},
-            child: Card(
-              child: Column(
-                children: <Widget>[
-                  InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Details(
-                                      namaMakanan: produk.nama,
-                                      gambarMakanan: produk.gambar,
-                                      detailMakanan: produk.detail,
-                                    )));
-                        Flushbar(
-                          aroundPadding: EdgeInsets.all(8),
-                          borderRadius: 8,
-                          title: "Makanan",
-                          message: produk.nama,
-                          duration: Duration(seconds: 1),
-                        )..show(context);
-                      },
-                      child: ColumnCustom(
-                        tag: produk.nama,
-                        gambar: produk.gambar,
-                        nama: produk.nama,
-                      ))
-                ],
+    return FutureBuilder<HomeItem>(
+      future: getMeals(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+
+        for(Meal data in snapshot.data.meals) {
+          daftarMakanan.add(Container(
+            height: 120.0,
+            child: InkWell(
+              onTap: () {},
+              child: Card(
+                child: Column(
+                  children: <Widget>[
+                    InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Details(
+                                      url: "https://www.themealdb.com/api/json/v1/1/lookup.php?i="+data.idMeal
+                                  )));
+                          Flushbar(
+                            aroundPadding: EdgeInsets.all(8),
+                            borderRadius: 8,
+                            title: "Makanan",
+                            message: data.strMeal,
+                            duration: Duration(seconds: 5),
+                          )..show(context);
+                        },
+                        child: ColumnCustom(
+                          tag: data.idMeal,
+                          gambar: data.strMealThumb,
+                          nama: data.strMeal,
+                        ))
+                  ],
+                ),
               ),
             ),
-          ),
+          ));
+        }
+
+        return new GridView.count(
+            crossAxisCount: 2,
+            children: daftarMakanan
         );
-
-    final grid = GridView.count(
-      crossAxisCount: 2,
-      children: data.map((produk) => createlist(produk)).toList(),
-    );
-
-    return Scaffold(
-      body: grid,
+      },
     );
   }
 }
@@ -68,16 +94,14 @@ class ColumnCustom extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Hero(
               tag: tag,
-              placeholderBuilder: (context, child) {
-                return Opacity(opacity: 0.2, child: child);
-              },
               child: ClipRRect(
                 borderRadius: new BorderRadius.circular(16.0),
-                child: Image.asset(
-                  gambar,
+                child: new FadeInImage.memoryNetwork(
+                  placeholder: kTransparentImage,
+                  image: gambar,
                   // height: 90.0,
                   // width: 100.0,
-                  height: 150.0,
+                  height: 130.0,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -88,9 +112,12 @@ class ColumnCustom extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              nama,
-              style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+            Center(
+                child: Text(
+                  nama,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+                )
             ),
           ],
         )
