@@ -1,18 +1,25 @@
-import 'package:flutter/material.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_app/model/homeitem.dart';
 import 'package:flutter_app/model/meal.dart';
 import 'package:flutter_app/screen/detail.dart';
-import 'package:flutter_app/screen/search.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class DessertScreen extends StatelessWidget {
-  List<Container> daftarMakanan = new List();
+class SearchingMeal extends StatefulWidget {
 
-  Future<HomeItem> getMeals() async {
-    final Response response = await http.get('https://www.themealdb.com/api/json/v1/1/filter.php?c=Dessert');
+  SearchingMeal();
+
+  @override
+  _SearchingMealState createState() => _SearchingMealState();
+}
+
+class _SearchingMealState extends State<SearchingMeal> {
+  String query = "";
+
+  Future<HomeItem> getMeals(String query) async {
+    final Response response = await http.get('https://www.themealdb.com/api/json/v1/1/search.php?s=$query');
 
     if (response.statusCode == 200) {
       return myModelFromJson(response.body);
@@ -23,10 +30,48 @@ class DessertScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      body: new FutureBuilder<HomeItem>(
-        future: getMeals(),
+      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              backgroundColor: Colors.lightGreen,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+              ),
+              centerTitle: true,
+              floating: true,
+              pinned: true,
+              title: TextField(
+                autofocus: true,
+                style: TextStyle(fontSize: 17, color: Colors.white),
+                decoration: InputDecoration.collapsed(
+                  hintText: "Meals Name...",
+                  hintStyle: TextStyle(fontSize: 17, color: Colors.white),
+                ),
+                onChanged: (text) {
+                  setState(() {
+                    query = text.toLowerCase();
+                  });
+                },
+              ),
+            )
+          ];
+        },
+        body: _buildBody(),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    List<Container> daftarMakanan = new List();
+
+    return new FutureBuilder<HomeItem>(
+        future: getMeals(query),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -50,7 +95,7 @@ class DessertScreen extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => Details(
-                                      type: 2,
+                                      type: 0,
 //                                      url: "https://www.themealdb.com/api/json/v1/1/lookup.php?i="+data.idMeal,
                                       idMeal: data.idMeal,
                                     )));
@@ -79,15 +124,6 @@ class DessertScreen extends StatelessWidget {
               children: daftarMakanan
           );
         }
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => SearchingMeal())),
-        tooltip: 'Increment',
-        child: Icon(Icons.search),
-      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/screen/breakfast_screen.dart';
 import 'package:flutter_app/screen/dessert_screen.dart';
+import 'package:flutter_app/screen/favorite.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   void initState() {
     // TODO: implement initState
     super.initState();
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
     currentTabIndex = 0;
   }
 
@@ -31,18 +32,25 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     return Scaffold(
       body: TabBarView(
         controller: tabController,
-        children: <Widget>[BreakfastScreen(), DessertScreen()],
+        children: <Widget>[BreakfastScreen(), DessertScreen(), FavoriteScreen()],
       ),
       bottomNavigationBar: Material(
+        key: Key("home"),
         color: Colors.lightGreen,
         child: TabBar(
           controller: tabController,
           tabs: <Widget>[
             Tab(
+              key: Key("breakfast"),
               text: "Breakfast",
             ),
             Tab(
+              key: Key("dessert"),
               text: "Dessert",
+            ),
+            Tab(
+              key: Key("favorite"),
+              text: "Favorite",
             )
           ],
         ),
